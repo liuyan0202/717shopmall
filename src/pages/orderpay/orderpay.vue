@@ -17,16 +17,19 @@
             <img src="./../../static/img/orderpay/1.jpg" alt="">
         </div>
         <div class="datalist">
+            <!--
+
             <Shopgoods v-for="(item,index) in datalist" :list="item" :index="index" :key="index" :show="false"></Shopgoods>
+            -->
             <div class="order_total">
                 <span>总额(含运费)</span>
-                <span class="totals">￥{{total}}</span>
+                <span class="totals">￥0</span>
             </div>
             <div class="payway"></div>
         </div>
         <div class="order_footer">
             <span class="order_price">
-                <i class="totalone">总计：￥{{total}}</i>
+                <i class="totalone">总计：￥0</i>
                 <i>(含运费)</i>
             </span>
             <button class="submitOrder">提交订单</button>
@@ -38,24 +41,16 @@ import Shopgoods from './../shopcar/shopgoods.vue'
 export default {
     data(){
         return {
-            total:0,
-            datalist:[]
         }
     },
     mounted(){
-        this.total = this.$route.query.total;
-        this.datalist = this.$route.query.data /*
-        bus.$on('goodsChecked',(data)=>{//每个被选中
-            this.list[data.name] = data.price
-        }) */
+        
     },
     methods:{
         returnFn(){
             this.$router.push({
                 name:'shopcar'
-            })/* 
-            this.datalist = []
-            this.total = 0 */
+            })
         },
         addAddress(){
             this.$router.push({

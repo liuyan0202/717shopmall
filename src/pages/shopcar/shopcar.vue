@@ -61,14 +61,13 @@ export default {
         },
         totalRemove(){
             if(this.totaldel === '结算'){
-                if(this.total){
-                    this.$router.push({
-                        name:'orderpay',
-                        query:{
-                            from:'shopcar',
-                            total:this.total,
-                            data:this.datalist
-                        }
+                    console.log(this.datalist)
+                if(this.datalist.length>0){
+                    this.$http.post('/buygoods',{
+                        token:getCookie('token'),
+                        goodsdata:this.datalist
+                    }).then(res=>{
+                        console.log(res.data)
                     })
                 }else {
                     this.$msgBus.$emit('msg','您还没有选中商品');

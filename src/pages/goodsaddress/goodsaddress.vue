@@ -39,6 +39,7 @@ export default {
     methods:{
         backFn(){
             this.$router.push({name:"orderpay"})
+            console.log(this.$route)
         },
         ischecked(){
             this.flag=!this.flag

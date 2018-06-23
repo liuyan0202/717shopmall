@@ -94,7 +94,7 @@ module.exports = function(app){
     })
 
     //加入购物车
-    app.post('/user/shopcar',(req,res)=>{
+    app.post('//user/shopcar',(req,res)=>{
         jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
             if(err){
                 res.json({
@@ -137,6 +137,50 @@ module.exports = function(app){
                     }
                 })
             }
+        })
+    })
+
+    //加入购买订单列表
+    app.post('/buygoods',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
+            if(err){
+                res.json({
+                    msg:'登录超时请重新登录',
+                    code:0
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
+                let buygoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                //console.log(req.body.goodsdata)
+                if(buygoods.length>0){
+                    /* buygoods.forEach((v,i)=>{
+                        req.body.goodsdata.forEach((item,ind)=>{
+                            if(item.wname === v.wname){
+                                console.log(wname)
+                                v.count=v.count+item.count
+                                return
+                            } else {
+                                buygoods.push(item)
+                            }
+                        })
+                    }) */
+                } else {
+                   buygoods = req.body.goodsdata
+                }
+                fs.writeFile(listpath,JSON.stringify(buygoods),(err)=>{//将读取的数据写入到文件中
+                    if(err){
+                        res.json({
+                            msg:'写入错误',
+                            code:0
+                        })
+                    } else {
+                        res.json({
+                            msg:'加入购物车成功',
+                            code:1
+                        })
+                    }
+                })
+            } 
         })
     })
 
