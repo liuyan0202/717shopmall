@@ -1,0 +1,35 @@
+.msgbox{
+    
+    position: fixed;
+    left:50%;
+    top:50%;
+    transform: translate3d(-50%,-50%,0);
+}
+.message{
+    background:rgba(0, 0, 0, 0.7);
+    height:.6rem;
+    border-radius: .6rem;
+    padding:0 .3rem;
+    color:#fff;
+    line-height: .6rem;
+    font-size:.3rem;
+    margin-bottom:10px;
+}
+.message-enter{
+    opacity: 0;
+}
+.message-enter-to{
+    opacity: 1;
+}
+.message-enter-active{
+    transition: opacity 1s linear
+}
+.message-leave{
+    opacity: 1;
+}
+.message-leave-to{
+    opacity: 0;
+}
+.message-leave-active{
+    transition: opacity 1s linear
+}

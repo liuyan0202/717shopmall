@@ -1,0 +1,31 @@
+﻿https://m.jd.com/index/recommend.action?_format_=json&page=1
+1.基于vue init-webpack-simple
+2.jsonp...封装一个jsonp解决跨域问题（请求淘宝数据有限时，所以就没有使用）
+3.server ==> goodslist下存放从京东找的数据,node express.js 起服务
+
+https://m.gome.com.cn/index.php?ctl=index&act=keywordsPromptNew&keystr=pij&dotime=1528960286000
+
+jsonwebtoken
+用法
+jwt.sign(payload, secretOrPrivateKey, [options, callback])
+（异步）如果提供回调，则使用err或JWT 调用回调。
+
+（同步）将JsonWebToken返回为字符串。
+
+payload必须是一个object, buffer或者string。请注意， exp只有当payload是object字面量时才可以设置。
+secretOrPrivateKey 是包含HMAC算法的密钥或RSA和ECDSA的PEM编码私钥的string或buffer。
+options:
+
+algorithm：加密算法（默认值：HS256）
+expiresIn：以秒表示或描述时间跨度zeit / ms的字符串。如60，"2 days"，"10h"，"7d"，Expiration time，过期时间
+notBefore：以秒表示或描述时间跨度zeit / ms的字符串。如：60，"2days"，"10h"，"7d"
+audience：Audience，观众
+issuer：Issuer，发行者
+jwtid：JWT ID
+subject：Subject，主题
+noTimestamp
+header
+
+jwt.sign签署
+jwt.verify验证
+jwt.decode解码

@@ -1,0 +1,132 @@
+.home{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction: column;
+}
+.home header{
+    width:100%;
+    height:1rem;
+    display: flex;
+    align-items: center;
+    background: #fff;
+}
+.home header span{
+    width:.9rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    color:rgb(246, 73, 73);
+}
+.home header .logo{
+    width:1.2rem;
+    margin-right:.1rem;
+}
+.home header .logo img{
+    width:100%;
+}
+.home header span.shop{
+    width:1.2rem;
+}
+.home header span b{
+    font-weight: normal;
+}
+.home header p{
+    position: relative;
+    flex:1;
+    height:.6rem;
+    background: #eee;
+    border-radius: .1rem;
+}
+.home header p .search{
+    position: absolute;
+    left:.2rem;
+    top:.1rem;
+}
+.home header p input{
+    background: none;
+    width:100%;
+    height:100%;
+    border:none;
+    text-indent: .6rem;
+    outline: none;
+    margin-right:.1rem;
+}
+.icon{
+    font-size:.4rem;
+}
+.home_wrap{
+    width:100%;
+    flex:1;
+    overflow-y: scroll;
+}
+.Mall_dynamic{
+    width:100%;
+    height:1rem;
+    background: #fff;
+    display: flex;
+}
+.Mall_dynamic .home_left{
+    width:1rem;
+    color:#ff6d00;
+    font-size:.35rem;
+    text-align: center;
+    margin-right:.2rem;
+}
+.Mall_dynamic .home_right{
+    flex:1;
+    height:1rem;
+}
+.home_right .swiper-slide{
+    line-height: 1rem;
+}
+.home_everyday{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height:.8rem;
+    background: #fff;
+    margin:5px 0;
+    padding:0 20px;
+}
+.home_everyday span{
+    color:#ff6d00;
+}
+.home_everyday span.one{
+    font-size:.3rem;
+    margin-right:.1rem;
+}
+.home_discounts{
+    width:100%;
+    height:4.28rem;
+    display: flex;
+}
+.home_discounts>div{
+    flex:1;
+}
+.home_discounts>div:nth-child(1){
+    margin-right:8px;
+}
+
+.home_discounts>div img{
+    width:100%;
+}
+.home_like{
+    width:100%;
+    height:.5rem;
+    background: #fff;
+    line-height: .5rem;
+    text-align: center;
+    color:#ff6d00;
+}
+.home_goods{
+    width:100%;
+    display: flex;
+    flex-wrap:wrap;
+}
+.tip{
+    width:100%;
+    height:.5rem;
+    text-align: center;
+    line-height: .5rem;
+}

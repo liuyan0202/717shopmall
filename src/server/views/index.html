@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size:1rem">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,maximum-scale=1.0,minimum-sacle=1.0,initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatiable" content="IE=Edge,chrome=1.0">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <title>717mall</title>
+  </head>
+  <script>
+    (function (doc, win, image_width) {
+      var docEl = doc.documentElement, //获取html标签
+      //orientationchange方向改变事件
+      resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+      recalc = function () {
+        //当前设备视口宽度
+        var clientWidth = docEl.clientWidth;
+        if (!clientWidth) return;
+        docEl.style.fontSize = 100 * (clientWidth / image_width) + 'px';
+      };
+
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false);
+
+      })(document, window, 750);
+  </script>
+  <body>
+    <div id="app"></div>
+    <script src="/build.js"></script>
+  </body>
+</html>
