@@ -7,6 +7,7 @@
             <span></span>
         </header>
         <div class="addressbox">
+            <div v-show="show" class="show">您还没有添加地址哦，请先添加</div>
             <div class="inforBox">
                 <p class="userinfo">
                     <span>路飞</span>
@@ -33,7 +34,8 @@
 export default {
     data(){
         return {
-            flag:false
+            flag:false,
+            show:false
         }
     },
     methods:{
@@ -46,6 +48,14 @@ export default {
         },
         newAdd(){
             this.$router.push({name:"newaddress"})
+        }
+    },
+    mounted(){
+        let address = localStorage.getItem('address');
+        if(!address){
+            this.show = true
+        } else {
+            
         }
     }
 }
@@ -116,6 +126,12 @@ export default {
 }
 .icon-dizhi{
     margin-right:10px;
+}
+.show{
+    width:100%;
+    height:2rem;
+    text-align: center;
+    line-height: 2rem;
 }
 </style>
 

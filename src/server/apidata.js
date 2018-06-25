@@ -234,87 +234,91 @@ app.post('/clearBuylist',(req,res)=>{
     })
 })
 
-    //加减数量
-    app.post('/goods/changeNum',(req,res)=>{
-        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
-            if(err){
-                res.json({
-                    msg:'登录超时请重新登录',
-                    code:0
-                })
-            } else {
-                let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
-                let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-                    usergoods[decoded.user].forEach((item,index)=>{
-                        if(item.wname===req.body.wname){
-                            item.count = req.body.count
-                        }
-                    })
-                fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
-                    if(err){
-                        res.json({
-                            msg:'写入错误',
-                            code:0
-                        })
-                    } else {
-                        res.json({
-                            msg:'数量改变成功',
-                            code:1
-                        })
+//加减数量
+app.post('/goods/changeNum',(req,res)=>{
+    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
+        if(err){
+            res.json({
+                msg:'登录超时请重新登录',
+                code:0
+            })
+        } else {
+            let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
+            let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                usergoods[decoded.user].forEach((item,index)=>{
+                    if(item.wname===req.body.wname){
+                        item.count = req.body.count
                     }
                 })
-            }
-        })
+            fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
+                if(err){
+                    res.json({
+                        msg:'写入错误',
+                        code:0
+                    })
+                } else {
+                    res.json({
+                        msg:'数量改变成功',
+                        code:1
+                    })
+                }
+            })
+        }
     })
+})
 
-    //删除购物车列表项
-    app.post('/goodsdel',(req,res)=>{
-        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
-            if(err){
-                res.json({
-                    msg:'登录超时请重新登录',
-                    code:0
-                })
-            } else {
-                let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
-                let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-                    let delindex=[]
-                    usergoods[decoded.user].forEach((item,index)=>{
-                        req.body.name.forEach((v,i)=>{
-                            if(item.wname === v){
-                                delindex.push(index)
-                            }
-                        })
-                    })
-
-                    let newarr=[]
-                    let str=''
-                    delindex.map((i)=>{
-                        str +=usergoods[decoded.user].splice(i,i+1)
-                    })
-                    usergoods[decoded.user].map(i=>{
-                        //console.log(i)
-                        console.log(str)
-                        if(str.indexOf(i)==-1){
-                            newarr.push(i)
+//删除购物车列表项
+app.post('/goodsdel',(req,res)=>{
+    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
+        if(err){
+            res.json({
+                msg:'登录超时请重新登录',
+                code:0
+            })
+        } else {
+            let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
+            let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                let delindex=[]
+                usergoods[decoded.user].forEach((item,index)=>{
+                    req.body.name.forEach((v,i)=>{
+                        if(item.wname === v){
+                            delindex.push(index)
                         }
-                        //console.log(newarr)
                     })
-                    
-                fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
-                    if(err){
-                        res.json({
-                            msg:'写入错误',
-                            code:0
-                        })
-                    } else {
-                        res.json({
-                            msg:'加入购物车成功',
-                            code:1
-                        })
-                    }
                 })
-            }
-        })
+
+                let newarr=[]
+                let str=''
+                delindex.map((i)=>{
+                    str +=usergoods[decoded.user].splice(i,i+1)
+                })
+                usergoods[decoded.user].map(i=>{
+                    //console.log(i)
+                    console.log(str)
+                    if(str.indexOf(i)==-1){
+                        newarr.push(i)
+                    }
+                    //console.log(newarr)
+                })
+                
+            fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
+                if(err){
+                    res.json({
+                        msg:'写入错误',
+                        code:0
+                    })
+                } else {
+                    res.json({
+                        msg:'加入购物车成功',
+                        code:1
+                    })
+                }
+            })
+        }
     })
+})
+//添加地址
+app.post('/newAddress',(req,res)=>{
+    
+})
 }

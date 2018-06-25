@@ -6,48 +6,99 @@
             <span></span>
         </header>
         <div class="infor">
-            <p><input type="text" placeholder="收货人姓名"></p>
-            <p><input type="text" placeholder="手机号"></p>
-            <p class="province">
-                <select name="" id="">
-                    <option value="北京">北京</option>
-                    <option value="江苏">江苏</option>
-                    <option value="广东">广东</option>
-                </select>
-                <select name="" id="">
+            <p><input type="text" placeholder="收货人姓名" v-model="name"></p>
+            <p><input type="text" placeholder="手机号" v-model="phone"></p>
+            <p class="pick">
+                <select name="" id="province">
                     <option value="北京">北京</option>
                     <option value="浙江">浙江</option>
+                    <option value="广东">广东</option>
+                </select>
+                <select name="" id="city">
+                    <option value="北京">北京</option>
+                    <option value="杭州">杭州</option>
                     <option value="广州">广州</option>
                 </select>
             </p>
             <p class="area">
-                <select name="" id="">
+                <select name="" id="areas">
                     <option value="海淀区">海淀区</option>
                     <option value="大兴">大兴</option>                    
                     <option value="朝阳区">朝阳区</option>
                     <option value="通州">通州</option>
                 </select>
             </p>
-            <p><input type="text" name="" id="" placeholder="详细地址"></p>
+            <p><input type="text" name="" id="" placeholder="详细地址" v-model="detailAddress"></p>
             <div><span :class="flag?'iconfont icon-checked':'iconfont icon-unchecked'" @click="ischecked"></span><span>设为默认地址</span></div>
-            <button class="save">保存</button>
+            <button class="save" @click="save">保存</button>
         </div>
     </div>
 
 </template>
 <script>
+import { getCookie } from '@/utils/cookie'
 export default {
     data(){
         return {
-            flag:false
+            flag:false,
+            info:{},
+            name:'',
+            phone:'',
+            detailAddress:''
         }
     },
     methods: {
         backFn() {
-            this.$router.push("/goodsaddress")
+            this.$router.push("/goodsaddress");
         },
         ischecked(){
             this.flag = !this.flag
+        },
+        save(){
+            //省
+            let myprovince = document.getElementById("province");
+            let index = myprovince.selectedIndex ;
+            let proval = myprovince.options[index].value;
+            //市
+            let mycity = document.getElementById("city");
+            let ind = mycity.selectedIndex;
+            let cityval = mycity.options[ind].value;
+            //区
+            let myarea = document.getElementById("areas");
+            let i = myarea.selectedIndex;
+            let areaval = myarea.options[i].value;
+
+            if(!this.name){
+                alert('请输入收件人姓名')
+                return
+            }
+            let reg = /^1[3578]\d{9}$/;
+            if(!this.phone){
+                alert('手机号不能为空')
+                return
+            }
+            if(!reg.test(this.phone)){
+                alert('请填写正确的手机号')
+                return
+            }
+            if(!this.detailAddress){
+                alert('请输入详细地址')
+                return
+            }
+            let obj = {
+                name:this.name,
+                phone:this.phone,
+                province:proval,
+                city:cityval,
+                area:areaval,
+                detailAddress:this.detailAddress
+            }
+            this.$http.post('/newAddress',{
+                token:getCookie('token'),
+                obj:obj
+            }).then(res=>{
+                console.log(res.data)
+            })
         }
     }
 }
@@ -88,11 +139,11 @@ export default {
     outline: none;
     text-indent: 1em;
 }
-.province{
+.pick{
     display: flex;
     justify-content: space-between;
 }
-.province select{
+.pick select{
     width:40%;
     border:none;
 }

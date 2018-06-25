@@ -74,13 +74,15 @@ export default {
                     this.totals += v.count*v.jdPrice
                 })
                 bus.$on('goodsChecked',(data)=>{
+                    let sum=0
                     this.list[data.name] = data.price
-                    let total = Object.values(this.list).reduce((init,item)=>{
-                        return init+item
-                    },0)
-                    console.log(total)
+                    //console.log(this.list)
+                    for(var key in this.list){
+                        sum+=this.list[key]
+                    
+                    }
+                    this.totals = sum
                 })
-                //console.log(this.totals)
             }
         })
     },
