@@ -26,7 +26,7 @@
 import bus from '@/utils/bus'
 import { getCookie } from '@/utils/cookie'
 export default {
-    props:['list','index','show'],
+    props:['list','index','show','par'],
     data(){
         return {
             ischeck:false
@@ -38,7 +38,9 @@ export default {
             bus.$emit('goodsChecked',{
                 name:this.list.wname,
                 price:this.ischeck?this.list.count*this.list.jdPrice:0,
-                data:this.list
+                data:this.ischeck?this.list:'',
+                ischeck:this.ischeck,
+                index:this.ischeck?'':index
             })
         },
         add_minus(val){//加减数量
@@ -55,7 +57,7 @@ export default {
                 wname: this.list.wname
             }).then(res=>{
                 if(res.data.code === 1){
-                    bus.$emit('goodsChecked',{name:this.list.wname,price:this.ischeck?this.list.count*this.list.jdPrice:0})
+                    bus.$emit('goodsChecked',{name:this.list.wname,price:this.ischeck||this.par?this.list.count*this.list.jdPrice:0})
                 }
             })
         }

@@ -17,19 +17,16 @@
             <img src="./../../static/img/orderpay/1.jpg" alt="">
         </div>
         <div class="datalist">
-            <!--
-
-            <Shopgoods v-for="(item,index) in datalist" :list="item" :index="index" :key="index" :show="false"></Shopgoods>
-            -->
+            <Shopgoods v-for="(item,index) in buylist" :list="item" :index="index" :key="index" :show="false" :par="true"></Shopgoods>
             <div class="order_total">
                 <span>总额(含运费)</span>
-                <span class="totals">￥0</span>
+                <span class="totals">￥{{totals}}</span>
             </div>
             <div class="payway"></div>
         </div>
         <div class="order_footer">
             <span class="order_price">
-                <i class="totalone">总计：￥0</i>
+                <i class="totalone">总计：￥{{totals}}</i>
                 <i>(含运费)</i>
             </span>
             <button class="submitOrder">提交订单</button>
@@ -38,18 +35,25 @@
 </template>
 <script>
 import Shopgoods from './../shopcar/shopgoods.vue'
+import {getCookie} from '@/utils/cookie'
+import bus from '@/utils/bus'
 export default {
     data(){
         return {
+            buylist:[],
+            totals:0,
+            list:{}
         }
-    },
-    mounted(){
-        
     },
     methods:{
         returnFn(){
             this.$router.push({
                 name:'shopcar'
+            })
+            this.$http.post('/clearBuylist',{
+                token:getCookie('token')
+            }).then(res=>{
+                console.log(res.data)
             })
         },
         addAddress(){
@@ -57,6 +61,28 @@ export default {
                 name:'goodsaddress'
             })
         }
+    },
+    created(){
+    },
+    mounted(){
+        this.$http.post('/getbuygoods',{
+            token:getCookie('token')
+        }).then(res=>{
+            if(res.data.code===1){
+                this.buylist = res.data.buylist;
+                res.data.buylist.forEach(v=>{
+                    this.totals += v.count*v.jdPrice
+                })
+                bus.$on('goodsChecked',(data)=>{
+                    this.list[data.name] = data.price
+                    let total = Object.values(this.list).reduce((init,item)=>{
+                        return init+item
+                    },0)
+                    console.log(total)
+                })
+                //console.log(this.totals)
+            }
+        })
     },
     components:{
         Shopgoods

@@ -151,31 +151,32 @@ module.exports = function(app){
             } else {
                 let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
                 let buygoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-                //console.log(req.body.goodsdata)
+                //console.log(req.body.name)
                 if(buygoods.length>0){
-                    /* buygoods.forEach((v,i)=>{
+                    let isRepeat = false
+                    buygoods.forEach((v,i)=>{
                         req.body.goodsdata.forEach((item,ind)=>{
-                            if(item.wname === v.wname){
-                                console.log(wname)
-                                v.count=v.count+item.count
-                                return
-                            } else {
-                                buygoods.push(item)
+                            if(item.wname === v.wname){//有重复
+                                v.count = v.count+item.count
+                                isRepeat = true
                             }
                         })
-                    }) */
+                    })
+                    if(!isRepeat){
+                        buygoods.push(req.body.goodsdata)//存在就在数据后push
+                    }
                 } else {
                    buygoods = req.body.goodsdata
                 }
                 fs.writeFile(listpath,JSON.stringify(buygoods),(err)=>{//将读取的数据写入到文件中
                     if(err){
                         res.json({
-                            msg:'写入错误',
+                            msg:'添加失败',
                             code:0
                         })
                     } else {
                         res.json({
-                            msg:'加入购物车成功',
+                            msg:'成功添加至购买列表',
                             code:1
                         })
                     }
@@ -183,6 +184,55 @@ module.exports = function(app){
             } 
         })
     })
+
+//读取购买列表
+app.post('/getbuygoods',(req,res)=>{
+    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+        if(err){
+            res.json({
+                msg:err,
+                code:0
+            })
+        } else {
+            let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
+            let buylist = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+            res.json({
+                msg:'success',
+                code:1,
+                buylist:buylist||[]
+            })
+        }
+    })
+})
+
+//清除购买列表
+app.post('/clearBuylist',(req,res)=>{
+    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+        if(err){
+            res.json({
+                msg:err,
+                code:0
+            })
+        } else {
+            let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
+            let buylist = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+            buylist = [];
+            fs.writeFile(listpath,JSON.stringify(buylist),(err)=>{//将数据清空
+                if(err){
+                    res.json({
+                        msg:'清空失败',
+                        code:0
+                    })
+                } else {
+                    res.json({
+                        msg:'成功清空列表',
+                        code:1
+                    })
+                }
+            })
+        }
+    })
+})
 
     //加减数量
     app.post('/goods/changeNum',(req,res)=>{

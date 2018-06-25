@@ -9,7 +9,7 @@
             <div v-show="$store.state.goodslist.length===0">
                 购物车里什么都没有哦
             </div>
-            <Shopgoods v-for="(item,index) in $store.state.goodslist" :list="item" :index="index" :key="index" :show="true"></Shopgoods>
+            <Shopgoods v-for="(item,index) in $store.state.goodslist" :list="item" :index="index" :key="index" :show="true" :par="false"></Shopgoods>
         </div>
         <div class="footer">
             <span><i :class="ischecked?'iconfont icon-checked':'iconfont icon-unchecked'" @click="checkfn"></i><b>全选</b></span>
@@ -61,13 +61,16 @@ export default {
         },
         totalRemove(){
             if(this.totaldel === '结算'){
-                    console.log(this.datalist)
                 if(this.datalist.length>0){
-                    this.$http.post('/buygoods',{
+                    this.$http.post('/buygoods',{//购买商品
                         token:getCookie('token'),
-                        goodsdata:this.datalist
+                        goodsdata:this.datalist,
                     }).then(res=>{
-                        console.log(res.data)
+                       if(res.data.code===1){
+                           this.$router.push({
+                               name:'orderpay'
+                           })
+                       }
                     })
                 }else {
                     this.$msgBus.$emit('msg','您还没有选中商品');
@@ -94,7 +97,22 @@ export default {
         bus.$on('goodsChecked',(data)=>{//每个被选中
             this.list[data.name] = data.price
             this.getTotal()
-            this.datalist.push(data.data)
+            //遍历this.datalist去重
+            if(data.ischeck){
+                if(this.datalist.length>0){
+                    this.datalist.forEach((v,i)=>{
+                        if(v.wname===data.data.wname){/* 
+                            console.log('重复了') */
+                            this.datalist.splice(i,1)
+                        }
+                    })
+                }
+                this.datalist.push(data.data)//为true添加进去
+            } else {
+                this.datalist.splice(data.index,1)
+            }
+            console.log(this.datalist)
+            
         })
     },
     components:{
