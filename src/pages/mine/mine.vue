@@ -2,7 +2,7 @@
     <div class="mine">
         <div class="mine_tops">
             <header class="mine_header">
-                <i class="icon iconfont icon-shezhi" @click="tips"></i>
+                <i class="icon iconfont icon-shezhi" @click="setting"></i>
                 <span>我的717商城</span>
                 <i></i>
             </header>
@@ -10,7 +10,7 @@
                 <div class="mine_img">
                     <img src="../../static/img/mine/heade.png" alt="">
                 </div>
-                <p>路飞</p>
+                <p>{{name}}</p>
             </div>
         </div>
         <div class="mine_bot">
@@ -27,15 +27,15 @@
                     <span>待付款</span>
                 </router-link>
                 <router-link tag="li" :to="{name:'myorder',query:{from:'mine',ind:1}}">
-                    <i class="icon iconfont icon-dengdaifukuan"></i>
+                    <i class="icon iconfont icon-daishouhuo"></i>
                     <span>待收货</span>
                 </router-link>
                 <router-link tag="li" :to="{name:'myorder',query:{from:'mine',ind:2}}">
-                    <i class="icon iconfont icon-dengdaifukuan"></i>
+                    <i class="icon iconfont icon-daifahuo"></i>
                     <span>待发货</span>
                 </router-link>
                 <router-link tag="li" :to="{name:'myorder',query:{from:'mine',ind:3}}">
-                    <i class="icon iconfont icon-dengdaifukuan"></i>
+                    <i class="icon iconfont icon-gerenzhongxinwodedingdan"></i>
                     <span>我的订单</span>
                 </router-link>
             </ul>
@@ -47,7 +47,7 @@
                     </p>
                     <i class="icon iconfont icon-xiangyou"></i>
                 </li>
-                <li>
+                <li @click="gotoAddr">
                     <p>
                         <i class="icon iconfont icon-dizhi"></i>
                         <span>地址管理</span>
@@ -68,12 +68,27 @@
 </template>
 <script>
 export default {
+    data(){
+        return {
+            name:'未知'
+        }
+    },
     methods:{
-        tips(){
-            this.$refs.message.active('消息提示成功')
+        setting(){
+            this.$router.push({
+                name:'setting'
+            })
         },
         clickfn(){
             this.$refs.message.active('消息')
+        },
+        gotoAddr(){
+            this.$router.push({
+                name:'goodsaddress',
+                query:{
+                    from:'mine'
+                }
+            })
         }
     }
 }

@@ -12,11 +12,13 @@ import Search from '@/pages/search/search'
 import Home from '@/pages/home/home.vue'
 
 //import Classify from '@/pages/classify/classify.vue'
+//按需加载
 const Classify = ()=>import(/* webpackChunkName: "Classify" */ '@/pages/classify/classify.vue')//按需加载
 
-import Shopcar from '@/pages/shopcar/shopcar.vue'
+import Shopcar from '@/pages/shopcar/shopcar.vue'//购物车
 
-import Mine from '@/pages/mine/mine.vue'
+import Mine from '@/pages/mine/mine.vue'//我的
+import Setting from '@/pages/setting/setting.vue'//我的设置
 
 import Orderpay from '@/pages/orderpay/orderpay.vue'//订单支付
 import Goodsaddress from '@/pages/goodsaddress/goodsaddress.vue'//收货地址
@@ -67,6 +69,11 @@ let router=new VueRouter({
                     component:Mine
                 }
             ]
+        },
+        {
+            name:'setting',
+            path:'/setting',
+            component:Setting
         },
         {
             name:'login',

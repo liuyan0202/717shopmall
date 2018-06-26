@@ -2,7 +2,7 @@
 <!--我的订单-->
     <div class="myorder">
         <div class="order_header">
-            <i class="iconfont icon-xaingzuo"></i>
+            <i class="iconfont icon-xaingzuo" @click="backFn"></i>
             <span>我的订单</span>
             <i class="iconfont icon-xiaoxi"></i>
         </div>
@@ -30,7 +30,13 @@
 </template>
 <script>
 export default {
-    
+    methods:{
+        backFn(){
+            this.$router.push({
+                name:'mine'
+            })
+        }
+    }
 }
 </script>
 <style scoped>

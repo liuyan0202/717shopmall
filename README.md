@@ -39,5 +39,6 @@
 * 4 server==>goodsdata列表数据,userinfo==>用户信息,express.js==>app.express(),apidata.js==>请求get或post,queryApi.js==>封装node的http请求,buygoods==>购买商品列表,goodsdata==>商品列表,nobuygoods==>待支付列表
 
 babel-plugin-syntax-dynamic-import(按需加载)
+vue-multiselect (vue第三方select)
 
      

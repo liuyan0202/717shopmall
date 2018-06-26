@@ -2,7 +2,7 @@
     <div class="home">
         <header>
             <span class="logo">
-                <img src="./../../static/img/home/logo.png" alt=""/>
+                <img src="./../../static/img/home/717.png" alt=""/>
             </span>
             <p>
                 <i class="icon iconfont icon-fangdajing search"></i>

@@ -8,61 +8,98 @@
         </header>
         <div class="addressbox">
             <div v-show="show" class="show">您还没有添加地址哦，请先添加</div>
-            <div class="inforBox">
+            <div class="infoBox" v-for="(x,ind) in addresslist" :key="ind">
                 <p class="userinfo">
-                    <span>路飞</span>
-                    <span>13344443344</span>
+                    <span>{{x.name}}</span>
+                    <span>{{x.phone}}</span>
                 </p>
-                <p class="detail_address"><i class="iconfont icon-dizhi"></i>北京市海淀区知春路北京市海淀区知春路北京市海淀区知春路</p>
+                <p class="detail_address"><i class="iconfont icon-dizhi"></i>{{x.province+''+x.city+''+x.detailAddress}}</p>
                 <div class="defult">
                     <aside>
-                        <span :class="flag?'iconfont icon-checked':'iconfont icon-unchecked'" @click="ischecked"></span>
+                        <span :class="ind===int?'iconfont icon-checked':'iconfont icon-unchecked'" @click="ischecked(ind)"></span>
                         <span>默认地址</span>
                     </aside>
                     <aside>
-                        <span>编辑</span>
-                        <span>删除</span>
+                        <span @click="editFn(x)">编辑</span>
+                        <span @click="deleteFn(ind)">删除</span>
                     </aside>
                 </div>
             </div>
         </div>
-        <button class="addFooter" @click="newAdd()"><i class="iconfont icon-jia"></i>新增地址</button>
+        <div class="footer_add">
+            <button class="addFooter" @click="newAdd"><i class="iconfont icon-jia"></i>新增地址</button>
+        </div>
     </div>
-
 </template>
 <script>
+import { getCookie } from '@/utils/cookie'
 export default {
     data(){
         return {
-            flag:false,
-            show:false
+            show:false,
+            addresslist:[],
+            int:null
         }
     },
     methods:{
         backFn(){
-            this.$router.push({name:"orderpay"})
-            console.log(this.$route)
+            this.$router.push({name:this.$route.query.from})
         },
-        ischecked(){
-            this.flag=!this.flag
+        editFn(data){
+            console.log(data.province)
+            this.$router.push({
+                name:'newaddress',
+                query:{
+                    type:'edit',
+                    name:data.name,
+                    phone:data.phone,
+                    province:encodeURI(data.province),
+                    city:data.city,
+                    area:data.area,
+                    detailAddress:data.detailAddress
+                }
+            })
         },
         newAdd(){
-            this.$router.push({name:"newaddress"})
+            this.$router.push({
+                name:"newaddress",
+                query:{
+                    type:'add'
+                }
+            })
+        },
+        ischecked(index){
+            this.int = index
+        },
+        deleteFn(index){
+            if(confirm('您确定要删除吗？')){
+                this.$http.post('/addr/delete',{
+                    token:getCookie('token'),
+                    index
+                }).then(res=>{
+                    if(res.data.code === 1){
+                        this.addresslist = res.data.addresslist
+                    }
+                })
+            }
+            
         }
     },
     mounted(){
-        let address = localStorage.getItem('address');
-        if(!address){
-            this.show = true
-        } else {
-            
-        }
+        this.$http.post('/getaddress',{
+            token:getCookie('token')
+        }).then(res=>{
+            if(res.data.code === 0){
+                this.show = true
+            } else {
+                this.addresslist = res.data.addresslist
+            }
+        })
     }
 }
 </script>
 <style scoped>
 .goodsBox{
-    position: relative;
     width:100%;
     height: 100%;
     display: flex;
@@ -76,7 +113,11 @@ export default {
   justify-content: space-between;
   border-bottom:1px solid #ccc;
 }
-.inforBox{
+.addressbox{
+    flex:1;
+    overflow-y: scroll;
+}
+.infoBox{
     background: #fff;
     margin-bottom:10px;
     padding:0 15px;
@@ -110,6 +151,11 @@ export default {
 }
 .icon-checked{
     color: red;
+}
+
+.footer_add{
+    position: relative;
+    height:2rem;
 }
 .addFooter{
     position: absolute;

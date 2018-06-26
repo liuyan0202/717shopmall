@@ -58,7 +58,10 @@ export default {
         },
         addAddress(){
             this.$router.push({
-                name:'goodsaddress'
+                name:'goodsaddress',
+                query:{
+                    from:'orderpay'
+                }
             })
         }
     },

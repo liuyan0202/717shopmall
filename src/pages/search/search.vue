@@ -134,6 +134,7 @@ export default {
     width:100%;
 }
 .search_hot p{
+    box-sizing: border-box;
     width:100%;
     height:1.4rem;
     padding:0 .5rem;

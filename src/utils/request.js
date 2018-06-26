@@ -16,15 +16,15 @@ axios.interceptors.request.use((config)=>{
 
 axios.interceptors.response.use((response)=>{
     if(response.status === 200){
-        return response.data
     } else {
+        return response.data
         return response
     }
 },(err)=>{
     return Promise.reject(err)
 })
-
-export {httpInstance}
+let axiosInstance = axios.create({})
+export {httpInstance,axiosInstance}
 export default {
     install(Vue){
         Object.defineProperty(Vue.prototype,'$http',{

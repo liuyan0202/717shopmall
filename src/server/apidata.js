@@ -185,140 +185,225 @@ module.exports = function(app){
         })
     })
 
-//读取购买列表
-app.post('/getbuygoods',(req,res)=>{
-    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
-        if(err){
-            res.json({
-                msg:err,
-                code:0
-            })
-        } else {
-            let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
-            let buylist = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-            res.json({
-                msg:'success',
-                code:1,
-                buylist:buylist||[]
-            })
-        }
+    //读取购买列表
+    app.post('/getbuygoods',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+            if(err){
+                res.json({
+                    msg:err,
+                    code:0
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
+                let buylist = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                res.json({
+                    msg:'success',
+                    code:1,
+                    buylist:buylist||[]
+                })
+            }
+        })
     })
-})
 
-//清除购买列表
-app.post('/clearBuylist',(req,res)=>{
-    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
-        if(err){
-            res.json({
-                msg:err,
-                code:0
-            })
-        } else {
-            let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
-            let buylist = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-            buylist = [];
-            fs.writeFile(listpath,JSON.stringify(buylist),(err)=>{//将数据清空
-                if(err){
-                    res.json({
-                        msg:'清空失败',
-                        code:0
-                    })
-                } else {
-                    res.json({
-                        msg:'成功清空列表',
-                        code:1
-                    })
-                }
-            })
-        }
-    })
-})
-
-//加减数量
-app.post('/goods/changeNum',(req,res)=>{
-    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
-        if(err){
-            res.json({
-                msg:'登录超时请重新登录',
-                code:0
-            })
-        } else {
-            let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
-            let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-                usergoods[decoded.user].forEach((item,index)=>{
-                    if(item.wname===req.body.wname){
-                        item.count = req.body.count
+    //清除购买列表
+    app.post('/clearBuylist',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+            if(err){
+                res.json({
+                    msg:err,
+                    code:0
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
+                let buylist = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                buylist = [];
+                fs.writeFile(listpath,JSON.stringify(buylist),(err)=>{//将数据清空
+                    if(err){
+                        res.json({
+                            msg:'清空失败',
+                            code:0
+                        })
+                    } else {
+                        res.json({
+                            msg:'成功清空列表',
+                            code:1
+                        })
                     }
                 })
-            fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
-                if(err){
-                    res.json({
-                        msg:'写入错误',
-                        code:0
-                    })
-                } else {
-                    res.json({
-                        msg:'数量改变成功',
-                        code:1
-                    })
-                }
-            })
-        }
+            }
+        })
     })
-})
 
-//删除购物车列表项
-app.post('/goodsdel',(req,res)=>{
-    jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
-        if(err){
-            res.json({
-                msg:'登录超时请重新登录',
-                code:0
-            })
-        } else {
-            let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
-            let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-                let delindex=[]
-                usergoods[decoded.user].forEach((item,index)=>{
-                    req.body.name.forEach((v,i)=>{
-                        if(item.wname === v){
-                            delindex.push(index)
+    //加减数量
+    app.post('/goods/changeNum',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
+            if(err){
+                res.json({
+                    msg:'登录超时请重新登录',
+                    code:0
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
+                let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                    usergoods[decoded.user].forEach((item,index)=>{
+                        if(item.wname===req.body.wname){
+                            item.count = req.body.count
                         }
                     })
-                })
-
-                let newarr=[]
-                let str=''
-                delindex.map((i)=>{
-                    str +=usergoods[decoded.user].splice(i,i+1)
-                })
-                usergoods[decoded.user].map(i=>{
-                    //console.log(i)
-                    console.log(str)
-                    if(str.indexOf(i)==-1){
-                        newarr.push(i)
+                fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
+                    if(err){
+                        res.json({
+                            msg:'写入错误',
+                            code:0
+                        })
+                    } else {
+                        res.json({
+                            msg:'数量改变成功',
+                            code:1
+                        })
                     }
-                    //console.log(newarr)
                 })
-                
-            fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
-                if(err){
-                    res.json({
-                        msg:'写入错误',
-                        code:0
+            }
+        })
+    })
+
+    //删除购物车列表项
+    app.post('/goodsdel',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
+            if(err){
+                res.json({
+                    msg:'登录超时请重新登录',
+                    code:0
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/shopcarList/shopcarlist.json');
+                let usergoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                    let delindex=[]
+                    usergoods[decoded.user].forEach((item,index)=>{
+                        req.body.name.forEach((v,i)=>{
+                            if(item.wname === v){
+                                delindex.push(index)
+                            }
+                        })
                     })
-                } else {
+
+                    let newarr=[]
+                    let str=''
+                    delindex.map((i)=>{
+                        str +=usergoods[decoded.user].splice(i,i+1)
+                    })
+                    usergoods[decoded.user].map(i=>{
+                        //console.log(i)
+                        console.log(str)
+                        if(str.indexOf(i)==-1){
+                            newarr.push(i)
+                        }
+                        //console.log(newarr)
+                    })
+                    
+                fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
+                    if(err){
+                        res.json({
+                            msg:'写入错误',
+                            code:0
+                        })
+                    } else {
+                        res.json({
+                            msg:'加入购物车成功',
+                            code:1
+                        })
+                    }
+                })
+            }
+        })
+    })
+
+    //获取地址
+    app.post('/getaddress',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+            if(err){
+                res.json({
+                    code:0,
+                    msg:'登录超时请重新请求'
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/address/address.json');
+                let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                if(address[decoded.user]){
                     res.json({
-                        msg:'加入购物车成功',
-                        code:1
+                        code:1,
+                        msg:'成功获取地址信息',
+                        addresslist:address[decoded.user]
                     })
                 }
-            })
-        }
+            }
+        })
     })
-})
-//添加地址
-app.post('/newAddress',(req,res)=>{
-    
-})
+
+    //添加地址
+    app.post('/newAddress',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
+            if(err){
+                res.json({
+                    msg:'登录超时请重新登录',
+                    code:0
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/address/address.json');
+                let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                if(address[decoded.user]){
+                    address[decoded.user].push(req.body.obj)
+                } else {
+                    address[decoded.user] = [req.body.obj]
+                }
+                fs.writeFile(listpath,JSON.stringify(address),(err)=>{//将读取的数据写入到文件中
+                    if(err){
+                        res.json({
+                            msg:'添加失败',
+                            code:0
+                        })
+                    } else {
+                        res.json({
+                            msg:'添加成功',
+                            code:1
+                        })
+                    }
+                })
+            }
+        })
+    })
+    //删除用户地址信息
+    app.post('/addr/delete',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+            if(err){
+                res.json({
+                    code:0,
+                    msg:'登录超时，请重新登录'
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/address/address.json');
+                let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                address[decoded.user].map((v,i)=>{
+                    if(i === req.body.index){
+                        address[decoded.user].splice(i,1)
+                    }
+                })
+                fs.writeFile(listpath,JSON.stringify(address),(err)=>{
+                    if(err){
+                        res.json({
+                            code:0,
+                            msg:"删除失败"
+                        })
+                    } else {
+                        res.json({
+                            code:1,
+                            msg:'删除成功',
+                            addresslist:address[decoded.user]
+                        })
+                    }
+                })
+
+            }
+        })
+    })
 }

@@ -8,7 +8,20 @@
         <div class="infor">
             <p><input type="text" placeholder="收货人姓名" v-model="name"></p>
             <p><input type="text" placeholder="手机号" v-model="phone"></p>
-            <p class="pick">
+            <div class="selectbox">
+                <div class="slect_adr">
+                    <div>
+                        <multiselect v-model="province" @select="provChange" :options="provlist" placeholder="请选择省" label="name"></multiselect>
+                    </div>
+                    <div>
+                        <multiselect v-model="city" @select="cityChange" :options="citylist" placeholder="请选择市" label="name"></multiselect>
+                    </div>
+                </div>
+                <div class="area_adr">
+                    <multiselect v-model="area" :options="arealist" placeholder="请选择区"></multiselect>
+                </div>
+            </div>
+            <!-- <p class="pick">
                 <select name="" id="province">
                     <option value="北京">北京</option>
                     <option value="浙江">浙江</option>
@@ -27,20 +40,31 @@
                     <option value="朝阳区">朝阳区</option>
                     <option value="通州">通州</option>
                 </select>
-            </p>
+            </p> -->
             <p><input type="text" name="" id="" placeholder="详细地址" v-model="detailAddress"></p>
             <div><span :class="flag?'iconfont icon-checked':'iconfont icon-unchecked'" @click="ischecked"></span><span>设为默认地址</span></div>
             <button class="save" @click="save">保存</button>
         </div>
+        <Message></Message>
     </div>
 
 </template>
 <script>
+import Multiselect from 'vue-multiselect'
 import { getCookie } from '@/utils/cookie'
+import "vue-multiselect/dist/vue-multiselect.min.css"//第三方select
+import { axiosInstance } from '@/utils/request'
+import axios from 'axios'
 export default {
     data(){
         return {
             flag:false,
+            province:'',
+            city:'',
+            area:'',
+            provlist:[],
+            citylist:[],
+            arealist:[],
             info:{},
             name:'',
             phone:'',
@@ -54,53 +78,67 @@ export default {
         ischecked(){
             this.flag = !this.flag
         },
+        provChange(option){
+            this.citylist = option.city;
+            this.city = '';
+            this.area = '';
+        },
+        cityChange(option){
+            this.arealist = option.area
+        },
         save(){
             //省
-            let myprovince = document.getElementById("province");
-            let index = myprovince.selectedIndex ;
-            let proval = myprovince.options[index].value;
+            let myprovince = this.province.name;
             //市
-            let mycity = document.getElementById("city");
-            let ind = mycity.selectedIndex;
-            let cityval = mycity.options[ind].value;
+            let mycity = this.city.name;
             //区
-            let myarea = document.getElementById("areas");
-            let i = myarea.selectedIndex;
-            let areaval = myarea.options[i].value;
+            let myarea = this.area;
 
-            if(!this.name){
-                alert('请输入收件人姓名')
+            if(!this.name||this.myprovince||this.mycity||this.myarea){
+                this.$msgBus.$emit('msg','请填写完整信息')
                 return
             }
             let reg = /^1[3578]\d{9}$/;
-            if(!this.phone){
-                alert('手机号不能为空')
-                return
-            }
             if(!reg.test(this.phone)){
                 alert('请填写正确的手机号')
-                return
-            }
-            if(!this.detailAddress){
-                alert('请输入详细地址')
                 return
             }
             let obj = {
                 name:this.name,
                 phone:this.phone,
-                province:proval,
-                city:cityval,
-                area:areaval,
+                province:myprovince,
+                city:mycity,
+                area:myarea,
                 detailAddress:this.detailAddress
             }
             this.$http.post('/newAddress',{
                 token:getCookie('token'),
                 obj:obj
             }).then(res=>{
-                console.log(res.data)
+                if(res.data.code === 1){
+                    this.$router.push({
+                        name:'goodsaddress'
+                    })
+                }
             })
         }
-    }
+    },
+    created(){
+        let {type,name,phone,province,city,area,detailAddress} = this.$route.query;
+        console.log(decodeURI(province),city)
+        if(type === 'edit'){
+            this.name = name;
+            this.phone = phone;
+            this.province = {name:decodeURI(province)};
+            this.city = {name:city};
+            this.area = area;
+            this.detailAddress = detailAddress;
+        }
+        axiosInstance.get('/src/server/city/city.json').then(res=>{
+            this.provlist = res.data
+        })
+    },
+    components: { Multiselect }
 }
 </script>
 <style scoped>
@@ -139,7 +177,24 @@ export default {
     outline: none;
     text-indent: 1em;
 }
-.pick{
+.multiselect{
+    color:#666;
+}
+.selectbox{
+    width:100%;
+}
+.selectbox .slect_adr{
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+}
+.slect_adr div{
+    flex:1;
+}
+.area_adr{
+    margin:10px 0;
+}
+/* .pick{
     display: flex;
     justify-content: space-between;
 }
@@ -155,7 +210,7 @@ export default {
 }
 .area select option{
      width:100%;
-}
+} */
 .save{
     width:80%;
     height:1rem;

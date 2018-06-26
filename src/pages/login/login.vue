@@ -150,7 +150,6 @@ export default {
     margin-left:10%;
     outline: none;
     border:0;
-    font-size:.4rem;
 }
 .errinfo{
     position: absolute;
