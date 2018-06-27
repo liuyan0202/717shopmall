@@ -7,7 +7,14 @@
             <span></span>
         </div>
         <div class="set_cont">
-            <p class="myhead"><span>我的头像</span><span class="set_rightone"><b class="set_img"><img src="./../../assets/logo.png" alt=""></b><i class="iconfont icon-xiangyou"></i></span></p>
+            <p class="myhead">
+                <span>我的头像</span>
+                <span class="set_rightone">
+                    <b class="set_img"><img :src="url" alt=""></b>
+                    <i class="iconfont icon-xiangyou"></i>
+                    <input type="file" class="file" @change="uploadFn">
+                </span>
+            </p>
             <p><span>用户名</span><span><b>路飞</b><i class="iconfont icon-xiangyou"></i></span></p>
             <p><span>我的二维码名片</span><span><b></b><i class="iconfont icon-xiangyou"></i></span></p>
         </div>
@@ -16,11 +23,12 @@
     </div>
 </template>
 <script>
-import { delCookie } from '@/utils/cookie'
+import { getCookie, delCookie } from '@/utils/cookie'
 export default {
     data(){
         return {
-            flag:false
+            flag:false,
+            url:'./../../static/img/mine/heade1.png'
         }
     },
     methods:{
@@ -36,7 +44,17 @@ export default {
             this.$router.push({
                 name:'mine'
             })
+        },
+        uploadFn(e){
+            let formData = new FormData();
+            formData.append('img',e.target.files[0])
+            this.$http.post('/uploadFile',formData).then(res=>{
+                this.url = res.data.file
+            })
         }
+    },
+    mounted(){
+        //this.url = 'http://localhost:8080/server/upload/img-1530084747500.jpg'
     }
 }
 </script>
@@ -67,9 +85,15 @@ export default {
     height:1.2rem;
 }
 .set_rightone{
+    position: relative;
     height:1.2rem;
     display: flex;
     align-items: center;
+}
+.set_rightone .file{
+    position: absolute;
+    height:100%;
+    opacity: 0;
 }
 .set_img{
     display: inline-block;
@@ -80,9 +104,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 .set_img img{
-    height:80%;
+    width:100%;
+    height:100%;
 }
 .set_cont p{
     height:1rem;

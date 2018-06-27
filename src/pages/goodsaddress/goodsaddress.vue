@@ -9,18 +9,20 @@
         <div class="addressbox">
             <div v-show="show" class="show">您还没有添加地址哦，请先添加</div>
             <div class="infoBox" v-for="(x,ind) in addresslist" :key="ind">
-                <p class="userinfo">
-                    <span>{{x.name}}</span>
-                    <span>{{x.phone}}</span>
-                </p>
-                <p class="detail_address"><i class="iconfont icon-dizhi"></i>{{x.province+''+x.city+''+x.detailAddress}}</p>
+                <div  @click="pickFn(x)">
+                    <p class="userinfo">
+                        <span>{{x.name}}</span>
+                        <span>{{x.phone}}</span>
+                    </p>
+                    <p class="detail_address"><i class="iconfont icon-dizhi"></i>{{x.province+''+x.city+''+x.detailAddress}}</p>
+                </div>
                 <div class="defult">
                     <aside>
                         <span :class="ind===int?'iconfont icon-checked':'iconfont icon-unchecked'" @click="ischecked(ind)"></span>
                         <span>默认地址</span>
                     </aside>
                     <aside>
-                        <span @click="editFn(x)">编辑</span>
+                        <span @click="editFn(x,ind)">编辑</span>
                         <span @click="deleteFn(ind)">删除</span>
                     </aside>
                 </div>
@@ -43,14 +45,20 @@ export default {
     },
     methods:{
         backFn(){
-            this.$router.push({name:this.$route.query.from})
+            if(this.$route.query.from){
+                this.$router.push({name:this.$route.query.from})
+            } else {
+                this.$router.push({
+                    name:'orderpay'
+                })
+            }
         },
-        editFn(data){
-            console.log(data.province)
+        editFn(data,index){
             this.$router.push({
                 name:'newaddress',
                 query:{
                     type:'edit',
+                    index:index,
                     name:data.name,
                     phone:data.phone,
                     province:encodeURI(data.province),
@@ -82,8 +90,24 @@ export default {
                     }
                 })
             }
-            
+        },
+        pickFn(x){
+            let address = x.province+''+x.city+''+x.detailAddress;
+            if(this.$route.query.from === 'orderpay'){
+                this.$router.push({
+                    name:'orderpay',
+                    query:{
+                        from:'goodsaddress',
+                        name:x.name,
+                        phone:x.phone,
+                        address
+                    }
+                })
+            }
         }
+    },
+    created(){
+        
     },
     mounted(){
         this.$http.post('/getaddress',{

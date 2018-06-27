@@ -8,7 +8,7 @@
             </header>
             <div class="mine_top">
                 <div class="mine_img">
-                    <img src="../../static/img/mine/heade.png" alt="">
+                    <img src="./../../static/img/mine/heade1.png" alt="">
                 </div>
                 <p>{{name}}</p>
             </div>

@@ -1,6 +1,21 @@
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');//用户信息加密
+const multer  = require('multer');//用于上传文件
+/* 
+const upload = multer({ dest: path.resolve(__dirname,'upload') }) */
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.resolve(__dirname+'/upload'))
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + Date.now()+'.'+file.originalname.split('.')[1])
+    }
+  })
+const upload = multer({
+        storage: storage
+    })
 module.exports = function(app){
     //请求路径
     let readPath = path.resolve(__dirname+'/goodsdata')
@@ -94,7 +109,7 @@ module.exports = function(app){
     })
 
     //加入购物车
-    app.post('//user/shopcar',(req,res)=>{
+    app.post('/user/shopcar',(req,res)=>{
         jwt.verify(req.body.token,'liuyan',(err,decoded)=>{//token解码
             if(err){
                 res.json({
@@ -151,7 +166,6 @@ module.exports = function(app){
             } else {
                 let listpath = path.resolve(__dirname+'/buygoods/buygoods.json');
                 let buygoods = JSON.parse(fs.readFileSync(listpath,'utf-8'));
-                //console.log(req.body.name)
                 if(buygoods.length>0){
                     let isRepeat = false
                     buygoods.forEach((v,i)=>{
@@ -287,20 +301,18 @@ module.exports = function(app){
                         })
                     })
 
-                    let newarr=[]
-                    let str=''
+                    let datalist = [...usergoods[decoded.user]]
                     delindex.map((i)=>{
-                        str +=usergoods[decoded.user].splice(i,i+1)
+                        datalist.splice(i,1,false)
                     })
-                    usergoods[decoded.user].map(i=>{
-                        //console.log(i)
-                        console.log(str)
-                        if(str.indexOf(i)==-1){
-                            newarr.push(i)
+                    let newdata = []
+                    datalist.map(v=>{
+                        if(v){
+                            newdata.push(v)
                         }
-                        //console.log(newarr)
                     })
-                    
+                    usergoods[decoded.user] = newdata
+
                 fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
                     if(err){
                         res.json({
@@ -402,8 +414,48 @@ module.exports = function(app){
                         })
                     }
                 })
+            }
+        })
+    })
+    //编辑用户地址信息
+    app.post('/addressEdit',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+            if(err){
+                res.json({
+                    code:0,
+                    msg:'登录超时，请重新登录'
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/address/address.json');                let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                address[decoded.user].map((v,i)=>{
+                    if(i === req.body.index){
+                        address[decoded.user][i]=req.body.obj
+                    }
+                })
+                fs.writeFile(listpath,JSON.stringify(address),(err)=>{
+                    if(err){
+                        res.json({
+                            code:0,
+                            msg:"编辑失败"
+                        })
+                    } else {
+                        res.json({
+                            code:1,
+                            msg:'编辑成功',
+                            addresslist:address[decoded.user]
+                        })
+                    }
+                })
 
             }
+        })
+    })
+    //上传文件
+    app.post('/uploadFile',upload.single('img'),(req,res)=>{
+        res.json({
+            code:1,
+            msg:'上传成功',
+            file:'http://localhost:8080/server/upload/'+req.file.filename
         })
     })
 }

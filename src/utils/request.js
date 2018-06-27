@@ -23,7 +23,7 @@ axios.interceptors.response.use((response)=>{
 },(err)=>{
     return Promise.reject(err)
 })
-let axiosInstance = axios.create({})
+let axiosInstance = axios.create({})//相当于使用axios
 export {httpInstance,axiosInstance}
 export default {
     install(Vue){

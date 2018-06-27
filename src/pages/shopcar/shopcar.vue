@@ -60,7 +60,8 @@ export default {
             }
         },
         totalRemove(){
-            if(this.totaldel === '结算'){
+            if(this.txtedit === '完成'){
+                if(this.totaldel === '结算'){
                 if(this.datalist.length>0){
                     this.$http.post('/buygoods',{//购买商品
                         token:getCookie('token'),
@@ -68,25 +69,34 @@ export default {
                     }).then(res=>{
                        if(res.data.code===1){
                            this.$router.push({
-                               name:'orderpay'
+                               name:'orderpay',
+                               query:{
+                                   from:'shopcar'
+                               }
                            })
                        }
                     })
                 }else {
                     this.$msgBus.$emit('msg','您还没有选中商品');
                 }
-            } else {
+            }
+            }
+            
+            if(this.txtedit === '编辑'){
+                if(this.totaldel === '删除') {
                 if(confirm('您确定要删除吗？')){
-                    console.log(this.list)
                     this.$http.post('/goodsdel',{
                         token:getCookie('token'),
                         name:Object.keys(this.list)
                     }).then(res=>{
                         if(res.data.code===1){
                             this.$store.dispatch('fetchGoods');//数据列表
+                            this.$msgBus.$emit('msg','删除成功');
+                            bus.$emit('clickAll',false)//全选
                         }
                     })
                 }
+            }
             }
         }
     },
@@ -101,8 +111,7 @@ export default {
             if(data.ischeck){
                 if(this.datalist.length>0){
                     this.datalist.forEach((v,i)=>{
-                        if(v.wname===data.data.wname){/* 
-                            console.log('重复了') */
+                        if(v.wname===data.data.wname){
                             this.datalist.splice(i,1)
                         }
                     })
@@ -111,8 +120,6 @@ export default {
             } else {
                 this.datalist.splice(data.index,1)
             }
-            console.log(this.datalist)
-            
         })
     },
     components:{

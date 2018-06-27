@@ -6,10 +6,10 @@
             <i class="iconfont icon-xiaoxi"></i>
         </div>
         <div class="order_address">
-            <div></div>
+            <div class="order_user"><span class="order_name">{{name}}</span><span>{{phone}}</span></div>
             <p @click="addAddress">
                 <span class="iconfont icon-dizhi"></span>
-                <span>请添加您的收货地址</span>
+                <span>{{address}}</span>
                 <span class="iconfont icon-xiangyou nextRight"></span>
             </p>
         </div>
@@ -42,7 +42,10 @@ export default {
         return {
             buylist:[],
             totals:0,
-            list:{}
+            list:{},
+            name:'',
+            phone:'',
+            address:'请添加您的收货地址'
         }
     },
     methods:{
@@ -65,8 +68,6 @@ export default {
             })
         }
     },
-    created(){
-    },
     mounted(){
         this.$http.post('/getbuygoods',{
             token:getCookie('token')
@@ -88,6 +89,12 @@ export default {
                 })
             }
         })
+        let { name, phone, address } = this.$route.query
+        if(this.$route.query.from === 'goodsaddress'){
+            this.name = name;
+            this.phone = phone;
+            this.address = address;
+        }
     },
     components:{
         Shopgoods
@@ -138,6 +145,16 @@ export default {
 }
 .order_img img{
     height:100%;
+}
+.order_user{
+    margin-bottom:10px;
+    padding-left:15px;
+    box-sizing: border-box;
+}
+.order_user .order_name{
+    font-weight: 800;
+    font-size:.4rem;
+    margin-right:15px;
 }
 .datalist{
     width:100%;

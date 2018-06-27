@@ -82,9 +82,7 @@ let store = new Vuex.Store({
                     })
                 } else {
                     state.num = null
-                    res.data.usergoods.forEach((v,i)=>{
-                        commit('updateGoods',res.data.usergoods)
-                    })
+                    commit('updateGoods',res.data.usergoods)
                 }
             })
         }

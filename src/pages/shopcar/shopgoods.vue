@@ -71,7 +71,6 @@ export default {
                 price:this.ischeck?this.list.count*this.list.jdPrice:0
             })
         })
-        
     }
 }
 </script>

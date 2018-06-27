@@ -21,26 +21,6 @@
                     <multiselect v-model="area" :options="arealist" placeholder="请选择区"></multiselect>
                 </div>
             </div>
-            <!-- <p class="pick">
-                <select name="" id="province">
-                    <option value="北京">北京</option>
-                    <option value="浙江">浙江</option>
-                    <option value="广东">广东</option>
-                </select>
-                <select name="" id="city">
-                    <option value="北京">北京</option>
-                    <option value="杭州">杭州</option>
-                    <option value="广州">广州</option>
-                </select>
-            </p>
-            <p class="area">
-                <select name="" id="areas">
-                    <option value="海淀区">海淀区</option>
-                    <option value="大兴">大兴</option>                    
-                    <option value="朝阳区">朝阳区</option>
-                    <option value="通州">通州</option>
-                </select>
-            </p> -->
             <p><input type="text" name="" id="" placeholder="详细地址" v-model="detailAddress"></p>
             <div><span :class="flag?'iconfont icon-checked':'iconfont icon-unchecked'" @click="ischecked"></span><span>设为默认地址</span></div>
             <button class="save" @click="save">保存</button>
@@ -65,7 +45,6 @@ export default {
             provlist:[],
             citylist:[],
             arealist:[],
-            info:{},
             name:'',
             phone:'',
             detailAddress:''
@@ -111,21 +90,36 @@ export default {
                 area:myarea,
                 detailAddress:this.detailAddress
             }
-            this.$http.post('/newAddress',{
-                token:getCookie('token'),
-                obj:obj
-            }).then(res=>{
-                if(res.data.code === 1){
-                    this.$router.push({
-                        name:'goodsaddress'
-                    })
-                }
-            })
+            if(this.$route.query.type === 'add'){
+                this.$http.post('/newAddress',{//添加新地址
+                    token:getCookie('token'),
+                    obj:obj
+                }).then(res=>{
+                    if(res.data.code === 1){
+                        this.$router.push({
+                            name:'goodsaddress'
+                        })
+                    }
+                })
+            }
+            if(this.$route.query.type === 'edit'){//编辑地址
+                this.$http.post('/addressEdit',{
+                    token:getCookie('token'),
+                    index:this.$route.query.index,
+                    obj:obj
+                }).then(res=>{
+                    if(res.data.code === 1){
+                        this.$router.puhs({
+                            name:'goodsaddress'
+                        })
+                    }
+                })
+            }
+            
         }
     },
     created(){
         let {type,name,phone,province,city,area,detailAddress} = this.$route.query;
-        console.log(decodeURI(province),city)
         if(type === 'edit'){
             this.name = name;
             this.phone = phone;
@@ -134,7 +128,7 @@ export default {
             this.area = area;
             this.detailAddress = detailAddress;
         }
-        axiosInstance.get('/src/server/city/city.json').then(res=>{
+        axiosInstance.get('/server/city/city.json').then(res=>{
             this.provlist = res.data
         })
     },
