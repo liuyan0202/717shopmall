@@ -60,7 +60,6 @@ export default {
             }
         },
         totalRemove(){
-            if(this.txtedit === '完成'){
                 if(this.totaldel === '结算'){
                 if(this.datalist.length>0){
                     this.$http.post('/buygoods',{//购买商品
@@ -79,11 +78,7 @@ export default {
                 }else {
                     this.$msgBus.$emit('msg','您还没有选中商品');
                 }
-            }
-            }
-            
-            if(this.txtedit === '编辑'){
-                if(this.totaldel === '删除') {
+            } else if(this.totaldel === '删除'){
                 if(confirm('您确定要删除吗？')){
                     this.$http.post('/goodsdel',{
                         token:getCookie('token'),
@@ -95,7 +90,7 @@ export default {
                             bus.$emit('clickAll',false)//全选
                         }
                     })
-                }
+                
             }
             }
         }

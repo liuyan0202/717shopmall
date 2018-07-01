@@ -17,7 +17,7 @@
                     <div class="classify_dl">
                         <dl v-for="(item,ind) in x.goodsTypeList" :key="ind">
                             <dt>
-                                <img :src="item.goodsTypeImgUrl" alt="">
+                                <img v-lazy="item.goodsTypeImgUrl" alt="">
                             </dt>
                             <dd>
                                 {{item.goodsTypeName}}
@@ -130,6 +130,7 @@ export default {
   flex: 0.7;
   background: #fff;
   overflow-y: scroll;
+  -webkit-overflow-scrolling:touch
 }
 .classify_box{
     width:100%;

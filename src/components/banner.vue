@@ -25,19 +25,19 @@
 </template>
 <script>
 import 'swiper/dist/css/swiper.css'
-//import Swiper from 'swiper'
+import Swiper from 'swiper/dist/js/swiper'
 export default {
     data(){
         return {}
     },
     mounted(){
-        /* new Swiper('.home_swiper',{
+        new Swiper('.home_swiper',{
             autoplay:{
                 delay:2000
             },
             loop:true,
             pagination : '.page'
-        }) */
+        })
     }
     
 }

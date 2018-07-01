@@ -50,13 +50,16 @@
             </div>
             <p class="tip">{{tips}}</p>
         </div>
+        <div class="home_reTop" v-show="isshow" @click="returnTop">
+            Top
+        </div>
         <Message ref="message"></Message>
     </div>
 </template>
 <script>
 import jsonp from '@/utils/jsonp.js'
 import 'swiper/dist/css/swiper.css'
-//import Swiper from 'swiper'
+import Swiper from 'swiper/dist/js/swiper.min.js'
 import Banner from '@/components/banner'
 import Iconlist from '@/components/iconlist'
 import Goodslist from '@/components/goodslist'
@@ -66,7 +69,8 @@ export default {
             goodslist:[],
             flag:true,
             page:1,
-            tips:'正在加载数据。。。'
+            tips:'正在加载数据。。。',
+            isshow:false
         }
     },
     methods:{
@@ -78,31 +82,38 @@ export default {
                 this.page++;
                 this.flag = false;
                 if(this.page<=3){
-                    this.$http(`http://localhost:3000/index/recommend.action?page=${this.page}`).then(res=>{
+                    this.$http(`/index/recommend.action?page=${this.page}`).then(res=>{
                         this.goodslist = [...this.goodslist,...JSON.parse(JSON.parse(res.data).recommend).wareInfoList]
                         this.flag = true
                     })
                 } else {
                     this.tips = '没有更多数据了哦。。。'
                 }
-                
+            }
+            if(scrollTop>1000){
+                this.isshow = true
+            } else {
+                this.isshow = false
             }
         },
         searchFn(){
             this.$router.push({
                 name:'search'
             })
+        },
+        returnTop(){
+            this.$refs.home_wrap.scrollTop = 0;
         }
     },
     mounted(){
-        /* new Swiper('.home_right',{
+        new Swiper('.home_right',{
             autoplay:{
                 delay:1000
             },
             loop:true,
             direction:'vertical',
             slidesPerView :'auto'
-        }) */
+        })
         this.$http(`/index/recommend.action?page=${this.page}`).then(res=>{
             this.goodslist = JSON.parse(JSON.parse(res.data).recommend).wareInfoList
         })

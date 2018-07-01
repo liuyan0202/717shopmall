@@ -52,7 +52,12 @@ export default {
     },
     methods: {
         backFn() {
-            this.$router.push("/goodsaddress");
+            this.$router.push({
+                name:"goodsaddress",
+                query:{
+                    from:this.$route.query.from
+                }
+            });
         },
         ischecked(){
             this.flag = !this.flag

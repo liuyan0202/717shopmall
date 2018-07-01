@@ -45,7 +45,7 @@ export default {
             list:{},
             name:'',
             phone:'',
-            address:'请添加您的收货地址'
+            address:''
         }
     },
     methods:{
@@ -53,7 +53,7 @@ export default {
             this.$router.push({
                 name:'shopcar'
             })
-            this.$http.post('/clearBuylist',{
+            this.$http.post('/clearBuylist',{//清除购物车列表
                 token:getCookie('token')
             }).then(res=>{
                 console.log(res.data)
@@ -80,20 +80,36 @@ export default {
                 bus.$on('goodsChecked',(data)=>{
                     let sum=0
                     this.list[data.name] = data.price
-                    //console.log(this.list)
                     for(var key in this.list){
                         sum+=this.list[key]
-                    
                     }
                     this.totals = sum
                 })
             }
         })
-        let { name, phone, address } = this.$route.query
+        
         if(this.$route.query.from === 'goodsaddress'){
-            this.name = name;
-            this.phone = phone;
-            this.address = address;
+            this.name = this.$route.query.name;
+            this.phone = this.$route.query.phone;
+            this.address = this.$route.query.address;
+        } else {
+            this.$http.post('/getaddress',{
+            token:getCookie('token')
+        }).then(res=>{
+            if(res.data.code === 1){
+                if(res.data.addresslist){
+                    res.data.addresslist.map(v=>{
+                    if(v.ischecked){
+                        this.address = v.province+''+v.city+''+v.area;
+                        this.name = v.name;
+                        this.phone = v.phone
+                    }
+                })
+                } else {
+                    this.address = '请添加您的收货地址'
+                }
+            }
+        })
         }
     },
     components:{

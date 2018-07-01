@@ -45,13 +45,8 @@ export default {
     },
     methods:{
         backFn(){
-            if(this.$route.query.from){
-                this.$router.push({name:this.$route.query.from})
-            } else {
-                this.$router.push({
-                    name:'orderpay'
-                })
-            }
+            console.log(this.$route.query.from)
+            this.$router.push({name:this.$route.query.from})
         },
         editFn(data,index){
             this.$router.push({
@@ -69,15 +64,21 @@ export default {
             })
         },
         newAdd(){
+
             this.$router.push({
                 name:"newaddress",
                 query:{
-                    type:'add'
+                    type:'add',
+                    from:this.$route.query.from
                 }
             })
         },
         ischecked(index){
             this.int = index
+            this.$http.post('/addr/default',{
+                token:getCookie('token'),
+                int:this.int
+            })
         },
         deleteFn(index){
             if(confirm('您确定要删除吗？')){
@@ -117,6 +118,11 @@ export default {
                 this.show = true
             } else {
                 this.addresslist = res.data.addresslist
+                res.data.addresslist.map((v,i)=>{
+                    if(v.ischecked){
+                        this.int = i
+                    }
+                })
             }
         })
     }

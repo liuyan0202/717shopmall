@@ -131,12 +131,13 @@ module.exports = function(app){
                     if(!flag){
                         let newData = {
                             ...req.body.data,
-                            count:1
+                            count:1,
+                            isPick:false//是否选中
                         }
                         usergoods[decoded.user].push(newData)//存在就在数据后push
                     }
                 } else {
-                    usergoods[decoded.user] = [{count:1,...req.body.data}]//不存在则直接添加
+                    usergoods[decoded.user] = [{count:1,isPick:false,...req.body.data}]//不存在则直接添加
                 }
                 fs.writeFile(listpath,JSON.stringify(usergoods),(err)=>{//将读取的数据写入到文件中
                     if(err){
@@ -330,13 +331,14 @@ module.exports = function(app){
         })
     })
 
+    
     //获取地址
     app.post('/getaddress',(req,res)=>{
         jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
             if(err){
                 res.json({
                     code:0,
-                    msg:'登录超时请重新请求'
+                    msg:err
                 })
             } else {
                 let listpath = path.resolve(__dirname+'/address/address.json');
@@ -425,8 +427,7 @@ module.exports = function(app){
                     code:0,
                     msg:'登录超时，请重新登录'
                 })
-            } else {
-                let listpath = path.resolve(__dirname+'/address/address.json');                let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+            } else {              let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
                 address[decoded.user].map((v,i)=>{
                     if(i === req.body.index){
                         address[decoded.user][i]=req.body.obj
@@ -446,7 +447,41 @@ module.exports = function(app){
                         })
                     }
                 })
-
+            }
+        })
+    })
+    //默认地址
+    app.post('/addr/default',(req,res)=>{
+        jwt.verify(req.body.token,'liuyan',(err,decoded)=>{
+            if(err){
+                res.json({
+                    code:0,
+                    msg:'登录失效,请重新登录'
+                })
+            } else {
+                let listpath = path.resolve(__dirname+'/address/address.json');
+                let address = JSON.parse(fs.readFileSync(listpath,'utf-8'));
+                address[decoded.user].map((v,i)=>{
+                    if(req.body.int === i){
+                        v['ischecked']=true
+                    } else {
+                        v['ischecked']=false
+                    }
+                })
+                fs.writeFile(listpath,JSON.stringify(address),(err)=>{
+                    if(err){
+                        res.json({
+                            code:0,
+                            msg:"选中失败"
+                        })
+                    } else {
+                        res.json({
+                            code:1,
+                            msg:'成功设为默认',
+                            addresslist:address[decoded.user]
+                        })
+                    }
+                })
             }
         })
     })
@@ -455,7 +490,7 @@ module.exports = function(app){
         res.json({
             code:1,
             msg:'上传成功',
-            file:'http://localhost:8080/server/upload/'+req.file.filename
+            file:'http://192.168.191.1:3000/server/upload/'+req.file.filename
         })
     })
 }

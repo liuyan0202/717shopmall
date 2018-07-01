@@ -1,4 +1,5 @@
-*{margin: 0;padding: 0;list-style: none;}
+*{margin: 0;padding: 0;list-style: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);}
 /*
 KISSY CSS Reset
 理念：1. reset 的目的不是清除浏览器的默认样式，这仅是部分工作。清除和重置是紧密不可分的。
@@ -35,7 +36,7 @@ ul, ol { list-style: none; }
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-
+input[type="button"], input[type="submit"], input[type="reset"] {-webkit-appearance: none;}
 /** 重置表单元素 **/
 legend { color: #000; } /* for ie6 */
 fieldset, img { border: 0; } /* img 搭车：让链接里的 img 无边框 */
@@ -59,5 +60,6 @@ html,body{
   width:100%;
   height:100%;
 }
+
 
 
